@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta lang="en"/>
+    <link href="css/styles.css" rel="stylesheet"/>
+  </head>
+  
+  <body>
+    <h3>贪吃蛇小游戏</h3>
+    <div class="scoreDiv" id="scoreDiv"></div>
+    
+    <canvas id="canvas" style="border: 1px solid #aaa; margin: 0 auto"></canvas>
+    
+    <script>
+      var scoreDiv = document.getElementById("scoreDiv");
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      var score = 0;
+      
+      window.onload = function(){
+        canvas.width = 400;
+        canvas.height = 400;
+        
+        setInterval(game, 1000/2);
+        document.addEventListener("keydown", keyPush);
+      }
+      
+      var px = py = 10;
+      var gs = tc = 20;
+      var ax = ay = 15;
+      var xv = yv = 0;
+      
+      var trail = [];
+      var tail = 5;
+      
+      function game(){
+        px += xv;
+        py += yv;
+        
+        if(px <= 0){
+          px = 0;
+        }
+        if(px >= tc-1){
+          px = tc-1;
+        }
+        if(py <= 0){
+          py = 0;
+        }
+        if(py >= tc-1){
+          py = tc-1;
+        }
+        
+        context.fillStyle = "black";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = "lime";
+        
+        for(var i=0; i<trail.length; i++){
+          context.fillRect(trail[i].x*gs, trail[i].y*gs, gs-2, gs-2);
+          if(trail[i].x == px && trail[i].y == py){
+            tail = 5;
+          }
+        }
+        
+        trail.push({x: px, y: py});
+        
+        while(trail.length > tail){
+          trail.shift();
+        }
+        
+        if(ax == px && ay ==py){
+          tail ++;
+          ax = Math.floor(Math.random()*tc);
+          ay = Math.floor(Math.random()*tc);
+          
+          score += 10;
+          scoreDiv.innerText = "得分:" + score;
+        }
+        
+        context.fillStyle = "red";
+        context.fillRect(ax*gs, ay*gs, gs-2, gs-2);
+      }
+      
+      var startx=0, starty=0;
+      var endx = 0, endy = 0;
+      ）
+      // 移动设备端添加触摸监听事件（start）
+      document.addEventListener("touchstart", function(e){
+        startx = e.touches[0].pageX;
+        starty = e.touches[0].pageY;
+      });
+      // 移动设备端添加触摸监听事件（move）
+      document.addEventListener("touchmove", function(e){
+        e.preventDefault();
+      });
+      // 移动设备端添加触摸监听事件（end）
+      document.addEventListener("touchend", function(e){
+        endx = e.changedTouches[0].pageX;
+        endy = e.changedTouches[0].pageY;
+        
+        var deltax = endx - startx;
+        var deltay = endy - starty;
+        
+        if(Math.abs(deltax) > Math.abs(deltay)){
+          if(deltax > 0){
+            xv = 1; yv = 0;
+          }else{
+            xv = -1; yv = 0;
+          }
+        }else{
+          if(deltay > 0){
+            xv = 0; yv = 1;
+          }else{
+            xv = 0; yv = -1;
+          }
+        }
+      })
+      
+      // 电脑设备端添加键盘监听事件
+      function keyPush(evt){
+        switch(evt.keyCode){
+          case 37:
+            xv = -1: yv = 0;
+            break;
+          case 38:
+            xv = 0; yv = -1;
+            break;
+          case 39:
+            xv = 1; yv = 0;
+            break;
+          case 40:
+            xv = 0; yv = 1;
+            break;
+          default : break;
+        }
+      }
+    </script>
+  </body>
+</html>
